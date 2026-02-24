@@ -48,6 +48,20 @@
         "description": "Name of the System and Application logs DCR."
       }
     },
+    "deployIisDcr": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "When true, deploys the IIS (W3C) logs DCR."
+      }
+    },
+    "iisDcrName": {
+      "type": "string",
+      "defaultValue": "bv-iis-dcr",
+      "metadata": {
+        "description": "Name of the IIS DCR."
+      }
+    },
     "deploySyslogDcr": {
       "type": "bool",
       "defaultValue": false,
@@ -137,6 +151,7 @@
     "workspaceResourceId": "[resourceId(parameters('workspaceResourceGroup'), 'Microsoft.OperationalInsights/workspaces', parameters('workspaceName'))]",
     "effectiveWindowsDcrName": "[if(equals(parameters('windowsDcrName'), ''), 'bv-windows-security-event-dcr', parameters('windowsDcrName'))]",
     "effectiveSystemAppDcrName": "[if(equals(parameters('systemAppDcrName'), ''), 'bv-windows-system-application-dcr', parameters('systemAppDcrName'))]",
+    "effectiveIisDcrName": "[if(equals(parameters('iisDcrName'), ''), 'bv-iis-dcr', parameters('iisDcrName'))]",
     "effectiveSyslogDcrName": "[if(equals(parameters('syslogDcrName'), ''), 'bv-syslog-dcr', parameters('syslogDcrName'))]",
     "effectiveCefDcrName": "[if(equals(parameters('cefDcrName'), ''), 'bv-cef-dcr', parameters('cefDcrName'))]",
     "effectiveCiscoDcrName": "[if(equals(parameters('ciscoDcrName'), ''), 'bv-cisco-dcr', parameters('ciscoDcrName'))]",
@@ -245,6 +260,50 @@
             ],
             "transformKql": "source",
             "outputStream": "Microsoft-Event"
+          }
+        ]
+      }
+    },
+    {
+      "condition": "[parameters('deployIisDcr')]",
+      "type": "Microsoft.Insights/dataCollectionRules",
+      "apiVersion": "2023-03-11",
+      "name": "[variables('effectiveIisDcrName')]",
+      "location": "[parameters('location')]",
+      "kind": "Windows",
+      "tags": {
+        "createdBy": "DCR-Deployment"
+      },
+      "properties": {
+        "streamDeclarations": {},
+        "dataSources": {
+          "iisLogs": [
+            {
+              "streams": [
+                "Microsoft-W3CIISLog"
+              ],
+              "name": "iisLogsDataSource"
+            }
+          ]
+        },
+        "destinations": {
+          "logAnalytics": [
+            {
+              "workspaceResourceId": "[variables('workspaceResourceId')]",
+              "name": "IISLogs"
+            }
+          ]
+        },
+        "dataFlows": [
+          {
+            "streams": [
+              "Microsoft-W3CIISLog"
+            ],
+            "destinations": [
+              "IISLogs"
+            ],
+            "transformKql": "source",
+            "outputStream": "Microsoft-W3CIISLog"
           }
         ]
       }
@@ -710,6 +769,14 @@
     "systemAppDcrName": {
       "type": "string",
       "value": "[if(parameters('deploySystemAppDcr'), variables('effectiveSystemAppDcrName'), '')]"
+    },
+    "iisDcrDeployed": {
+      "type": "bool",
+      "value": "[parameters('deployIisDcr')]"
+    },
+    "iisDcrName": {
+      "type": "string",
+      "value": "[if(parameters('deployIisDcr'), variables('effectiveIisDcrName'), '')]"
     },
     "syslogDcrDeployed": {
       "type": "bool",
