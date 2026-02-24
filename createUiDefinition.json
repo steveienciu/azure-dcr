@@ -81,6 +81,29 @@
             "visible": "[steps('dcr').deployWindowsDcrs]"
           },
           {
+            "name": "deployIisDcr",
+            "type": "Microsoft.Common.CheckBox",
+            "label": "Deploy IIS DCR?",
+            "toolTip": "When checked, a Data Collection Rule for IIS (W3C) logs will be created and linked to your Log Analytics workspace.",
+            "constraints": {
+              "required": false
+            },
+            "visible": true
+          },
+          {
+            "name": "iisDcrName",
+            "type": "Microsoft.Common.TextBox",
+            "label": "IIS DCR name",
+            "defaultValue": "bv-iis-dcr",
+            "toolTip": "Name for the IIS Data Collection Rule. Must be unique in the resource group.",
+            "constraints": {
+              "required": false,
+              "regex": "^[A-Za-z0-9][A-Za-z0-9-_.]*[A-Za-z0-9_]$|^[A-Za-z0-9]$",
+              "validationMessage": "Use alphanumeric characters, hyphens, underscores, or periods."
+            },
+            "visible": "[steps('dcr').deployIisDcr]"
+          },
+          {
             "name": "deployUnmanagedCollectorDcr",
             "type": "Microsoft.Common.CheckBox",
             "label": "Deploy Unmanaged Collector DCR?",
@@ -249,6 +272,8 @@
       "windowsDcrName": "[steps('dcr').windowsDcrName]",
       "deploySystemAppDcr": "[steps('dcr').deployWindowsDcrs]",
       "systemAppDcrName": "[steps('dcr').systemAppDcrName]",
+      "deployIisDcr": "[steps('dcr').deployIisDcr]",
+      "iisDcrName": "[steps('dcr').iisDcrName]",
       "deploySyslogDcr": "[steps('dcr').deploySyslogDcr]",
       "syslogDcrName": "[steps('dcr').syslogDcrName]",
       "deployCefDcr": "[steps('dcr').deployCefDcr]",
