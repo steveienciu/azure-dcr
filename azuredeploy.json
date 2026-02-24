@@ -47,12 +47,56 @@
       "metadata": {
         "description": "Name of the System and Application logs DCR."
       }
+    },
+    "deploySyslogDcr": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "When true, deploys the syslog DCR for unmanaged collectors."
+      }
+    },
+    "syslogDcrName": {
+      "type": "string",
+      "defaultValue": "bv-syslog-dcr",
+      "metadata": {
+        "description": "Name of the syslog DCR."
+      }
+    },
+    "deployCefDcr": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "When true, deploys the CEF DCR for unmanaged collectors."
+      }
+    },
+    "cefDcrName": {
+      "type": "string",
+      "defaultValue": "bv-cef-dcr",
+      "metadata": {
+        "description": "Name of the CEF DCR."
+      }
+    },
+    "deployCiscoDcr": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Reserved for future Cisco DCR deployment."
+      }
+    },
+    "ciscoDcrName": {
+      "type": "string",
+      "defaultValue": "bv-cisco-dcr",
+      "metadata": {
+        "description": "Name for the Cisco DCR (for future use)."
+      }
     }
   },
   "variables": {
     "workspaceResourceId": "[resourceId(parameters('workspaceResourceGroup'), 'Microsoft.OperationalInsights/workspaces', parameters('workspaceName'))]",
     "effectiveWindowsDcrName": "[if(equals(parameters('windowsDcrName'), ''), 'bv-windows-security-event-dcr', parameters('windowsDcrName'))]",
-    "effectiveSystemAppDcrName": "[if(equals(parameters('systemAppDcrName'), ''), 'bv-windows-system-application-dcr', parameters('systemAppDcrName'))]"
+    "effectiveSystemAppDcrName": "[if(equals(parameters('systemAppDcrName'), ''), 'bv-windows-system-application-dcr', parameters('systemAppDcrName'))]",
+    "effectiveSyslogDcrName": "[if(equals(parameters('syslogDcrName'), ''), 'bv-syslog-dcr', parameters('syslogDcrName'))]",
+    "effectiveCefDcrName": "[if(equals(parameters('cefDcrName'), ''), 'bv-cef-dcr', parameters('cefDcrName'))]"
   },
   "resources": [
     {
@@ -158,6 +202,159 @@
           }
         ]
       }
+    },
+    {
+      "condition": "[parameters('deploySyslogDcr')]",
+      "type": "Microsoft.Insights/dataCollectionRules",
+      "apiVersion": "2022-06-01",
+      "name": "[variables('effectiveSyslogDcrName')]",
+      "location": "[parameters('location')]",
+      "kind": "Linux",
+      "tags": {
+        "createdBy": "DCR-Deployment"
+      },
+      "properties": {
+        "streamDeclarations": {},
+        "dataSources": {
+          "syslog": [
+            {
+              "streams": [
+                "Microsoft-Syslog"
+              ],
+              "facilityNames": [
+                "alert",
+                "audit",
+                "auth",
+                "authpriv",
+                "clock",
+                "cron",
+                "daemon",
+                "ftp",
+                "kern",
+                "local0",
+                "local1",
+                "local2",
+                "local3",
+                "local4",
+                "local5",
+                "local6",
+                "local7",
+                "lpr",
+                "mail",
+                "news",
+                "nopri",
+                "ntp",
+                "syslog",
+                "user",
+                "uucp"
+              ],
+              "logLevels": [
+                "Info",
+                "Notice",
+                "Warning",
+                "Error",
+                "Critical",
+                "Alert",
+                "Emergency"
+              ],
+              "name": "sysLogsDataSource"
+            }
+          ]
+        },
+        "destinations": {
+          "logAnalytics": [
+            {
+              "workspaceResourceId": "[variables('workspaceResourceId')]",
+              "name": "Syslog"
+            }
+          ]
+        },
+        "dataFlows": [
+          {
+            "streams": [
+              "Microsoft-Syslog"
+            ],
+            "destinations": [
+              "Syslog"
+            ],
+            "transformKql": "source | where ProcessName != 'CEF'",
+            "outputStream": "Microsoft-Syslog"
+          }
+        ]
+      }
+    },
+    {
+      "condition": "[parameters('deployCefDcr')]",
+      "type": "Microsoft.Insights/dataCollectionRules",
+      "apiVersion": "2022-06-01",
+      "name": "[variables('effectiveCefDcrName')]",
+      "location": "[parameters('location')]",
+      "kind": "Linux",
+      "tags": {
+        "createdBy": "DCR-Deployment"
+      },
+      "properties": {
+        "dataSources": {
+          "syslog": [
+            {
+              "streams": [
+                "Microsoft-CommonSecurityLog"
+              ],
+              "facilityNames": [
+                "local0",
+                "local1",
+                "local2",
+                "local3",
+                "local4",
+                "local5",
+                "local6",
+                "local7"
+              ],
+              "logLevels": [
+                "Info",
+                "Notice",
+                "Warning",
+                "Error",
+                "Critical",
+                "Alert",
+                "Emergency"
+              ],
+              "name": "sysLogsDataSource-CEF"
+            },
+            {
+              "streams": [
+                "Microsoft-CommonSecurityLog"
+              ],
+              "facilityNames": [
+                "nopri"
+              ],
+              "logLevels": [
+                "Emergency"
+              ],
+              "name": "sysLogsDataSource-CEF-nopri"
+            }
+          ]
+        },
+        "destinations": {
+          "logAnalytics": [
+            {
+              "workspaceResourceId": "[variables('workspaceResourceId')]",
+              "name": "DataCollectionEvent"
+            }
+          ]
+        },
+        "dataFlows": [
+          {
+            "streams": [
+              "Microsoft-CommonSecurityLog"
+            ],
+            "destinations": [
+              "DataCollectionEvent"
+            ],
+            "transformKql": "source"
+          }
+        ]
+      }
     }
   ],
   "outputs": {
@@ -176,6 +373,22 @@
     "systemAppDcrName": {
       "type": "string",
       "value": "[if(parameters('deploySystemAppDcr'), variables('effectiveSystemAppDcrName'), '')]"
+    },
+    "syslogDcrDeployed": {
+      "type": "bool",
+      "value": "[parameters('deploySyslogDcr')]"
+    },
+    "syslogDcrName": {
+      "type": "string",
+      "value": "[if(parameters('deploySyslogDcr'), variables('effectiveSyslogDcrName'), '')]"
+    },
+    "cefDcrDeployed": {
+      "type": "bool",
+      "value": "[parameters('deployCefDcr')]"
+    },
+    "cefDcrName": {
+      "type": "string",
+      "value": "[if(parameters('deployCefDcr'), variables('effectiveCefDcrName'), '')]"
     }
   }
 }
