@@ -1,0 +1,98 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Region for the Data Collection Rule."
+      }
+    },
+    "workspaceResourceGroup": {
+      "type": "string",
+      "metadata": {
+        "description": "Resource group containing the Log Analytics workspace."
+      }
+    },
+    "workspaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the Log Analytics workspace that will receive the data."
+      }
+    },
+    "deployWindowsDcr": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "When true, deploys the Windows Event Logs Data Collection Rule."
+      }
+    },
+    "windowsDcrName": {
+      "type": "string",
+      "defaultValue": "WindowsSecurityEventDCR",
+      "metadata": {
+        "description": "Name of the Windows Event Logs DCR."
+      }
+    }
+  },
+  "variables": {
+    "workspaceResourceId": "[resourceId(parameters('workspaceResourceGroup'), 'Microsoft.OperationalInsights/workspaces', parameters('workspaceName'))]",
+    "effectiveWindowsDcrName": "[if(equals(parameters('windowsDcrName'), ''), 'WindowsSecurityEventDCR', parameters('windowsDcrName'))]"
+  },
+  "resources": [
+    {
+      "condition": "[parameters('deployWindowsDcr')]",
+      "type": "Microsoft.Insights/dataCollectionRules",
+      "apiVersion": "2022-06-01",
+      "name": "[variables('effectiveWindowsDcrName')]",
+      "location": "[parameters('location')]",
+      "tags": {
+        "createdBy": "DCR-Deployment"
+      },
+      "properties": {
+        "dataSources": {
+          "windowsEventLogs": [
+            {
+              "name": "eventLogsDataSource",
+              "scheduledTransferPeriod": "PT5M",
+              "streams": [
+                "Microsoft-SecurityEvent"
+              ],
+              "xPathQueries": [
+                "Security!*[System[(EventID=4624)]]"
+              ]
+            }
+          ]
+        },
+        "destinations": {
+          "logAnalytics": [
+            {
+              "name": "SecurityEvent",
+              "workspaceResourceId": "[variables('workspaceResourceId')]"
+            }
+          ]
+        },
+        "dataFlows": [
+          {
+            "streams": [
+              "Microsoft-SecurityEvent"
+            ],
+            "destinations": [
+              "SecurityEvent"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {
+    "windowsDcrDeployed": {
+      "type": "bool",
+      "value": "[parameters('deployWindowsDcr')]"
+    },
+    "windowsDcrName": {
+      "type": "string",
+      "value": "[if(parameters('deployWindowsDcr'), variables('effectiveWindowsDcrName'), '')]"
+    }
+  }
+}

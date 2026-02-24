@@ -1,0 +1,93 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+  "handler": "Microsoft.Azure.CreateUIDef",
+  "version": "0.1.2-preview",
+  "parameters": {
+    "config": {
+      "isWizard": false,
+      "basics": {
+        "location": {
+          "label": "Location",
+          "toolTip": "Region where the Data Collection Rule will be deployed. Use the same region as your Log Analytics workspace.",
+          "resourceTypes": [
+            "Microsoft.Insights/dataCollectionRules"
+          ]
+        }
+      }
+    },
+    "basics": [
+      {
+        "name": "workspaceResourceGroup",
+        "type": "Microsoft.Common.TextBox",
+        "label": "Log Analytics workspace resource group",
+        "defaultValue": "",
+        "toolTip": "Resource group that contains the Log Analytics workspace where Windows event data will be sent.",
+        "constraints": {
+          "required": true,
+          "regex": "^[A-Za-z0-9][A-Za-z0-9-._()]*[A-Za-z0-9_()]$|^[A-Za-z0-9]$",
+          "validationMessage": "Enter a valid resource group name."
+        },
+        "visible": true
+      },
+      {
+        "name": "workspaceName",
+        "type": "Microsoft.Common.TextBox",
+        "label": "Log Analytics workspace name",
+        "defaultValue": "",
+        "toolTip": "Name of the Log Analytics workspace that will receive the Windows Security events.",
+        "constraints": {
+          "required": true,
+          "regex": "^[A-Za-z0-9][A-Za-z0-9-]*[A-Za-z0-9]$",
+          "validationMessage": "Workspace name must be 4-63 characters; alphanumeric and hyphens only."
+        },
+        "visible": true
+      }
+    ],
+    "steps": [
+      {
+        "name": "dcr",
+        "label": "Data Collection Rule",
+        "elements": [
+          {
+            "name": "infoDcr",
+            "type": "Microsoft.Common.InfoBox",
+            "visible": true,
+            "options": {
+              "icon": "Info",
+              "text": "Configure a Data Collection Rule (DCR) for Windows event logs. The DCR will collect Windows Security events (e.g. sign-in events) and send them to your Log Analytics workspace."
+            }
+          },
+          {
+            "name": "deployWindowsDcr",
+            "type": "Microsoft.Common.CheckBox",
+            "label": "Deploy Windows Event Logs DCR?",
+            "toolTip": "When checked, a Data Collection Rule for Windows Security events will be created and linked to your Log Analytics workspace.",
+            "constraints": {
+              "required": false
+            },
+            "visible": true
+          },
+          {
+            "name": "windowsDcrName",
+            "type": "Microsoft.Common.TextBox",
+            "label": "DCR name",
+            "defaultValue": "WindowsSecurityEventDCR",
+            "toolTip": "Name for the Data Collection Rule. Must be unique in the resource group.",
+            "constraints": {
+              "required": false,
+              "regex": "^[A-Za-z0-9][A-Za-z0-9-_.]*[A-Za-z0-9_]$|^[A-Za-z0-9]$",
+              "validationMessage": "Use alphanumeric characters, hyphens, underscores, or periods."
+            },
+            "visible": "[steps('dcr').deployWindowsDcr]"
+          }
+        ]
+      }
+    ],
+    "outputs": {
+      "location": "[location()]",
+      "workspaceResourceGroup": "[basics('workspaceResourceGroup')]",
+      "workspaceName": "[basics('workspaceName')]",
+      "deployWindowsDcr": "[steps('dcr').deployWindowsDcr]",
+      "windowsDcrName": "[steps('dcr').windowsDcrName]"
+    }
+  }
