@@ -583,7 +583,13 @@
                 "news"
               ],
               "logLevels": [
-                "*"
+                "Info",
+                "Notice",
+                "Warning",
+                "Error",
+                "Critical",
+                "Alert",
+                "Emergency"
               ],
               "name": "sysLogs-MgdCEF"
             },
