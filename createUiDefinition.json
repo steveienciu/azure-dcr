@@ -41,7 +41,7 @@
             "visible": true,
             "options": {
               "icon": "Info",
-              "text": "Configure a Data Collection Rule (DCR) for Windows event logs. The DCR will collect Windows Security events (e.g. sign-in events) and send them to your Log Analytics workspace."
+              "text": "Configure Data Collection Rules (DCRs) for Windows. You can deploy a Windows Security events DCR and/or a System and Application logs DCR to your Log Analytics workspace."
             }
           },
           {
@@ -66,6 +66,29 @@
               "validationMessage": "Use alphanumeric characters, hyphens, underscores, or periods."
             },
             "visible": "[steps('dcr').deployWindowsDcr]"
+          },
+          {
+            "name": "deploySystemAppDcr",
+            "type": "Microsoft.Common.CheckBox",
+            "label": "Deploy System and Application logs DCR?",
+            "toolTip": "When checked, a DCR will be created to collect Windows System and Application event logs (by level) and send them to your Log Analytics workspace.",
+            "constraints": {
+              "required": false
+            },
+            "visible": true
+          },
+          {
+            "name": "systemAppDcrName",
+            "type": "Microsoft.Common.TextBox",
+            "label": "System/Application DCR name",
+            "defaultValue": "bv-windows-system-application-dcr",
+            "toolTip": "Name for the System and Application logs Data Collection Rule. Must be unique in the resource group.",
+            "constraints": {
+              "required": false,
+              "regex": "^[A-Za-z0-9][A-Za-z0-9-_.]*[A-Za-z0-9_]$|^[A-Za-z0-9]$",
+              "validationMessage": "Use alphanumeric characters, hyphens, underscores, or periods."
+            },
+            "visible": "[steps('dcr').deploySystemAppDcr]"
           }
         ]
       }
@@ -75,7 +98,9 @@
       "workspaceResourceGroup": "[resourceGroup().name]",
       "workspaceName": "[basics('workspaceName')]",
       "deployWindowsDcr": "[steps('dcr').deployWindowsDcr]",
-      "windowsDcrName": "[steps('dcr').windowsDcrName]"
+      "windowsDcrName": "[steps('dcr').windowsDcrName]",
+      "deploySystemAppDcr": "[steps('dcr').deploySystemAppDcr]",
+      "systemAppDcrName": "[steps('dcr').systemAppDcrName]"
     }
   }
 }
