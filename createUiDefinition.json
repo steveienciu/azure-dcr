@@ -91,3 +91,4 @@
       "windowsDcrName": "[steps('dcr').windowsDcrName]"
     }
   }
+}
