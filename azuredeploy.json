@@ -450,7 +450,7 @@
               "logLevels": [
                 "Emergency"
               ],
-              "name": "sysLogsDataSource-CiscoAsa-nopri"
+              "name": "sysLogs-CiscoAsa-nopri"
             }
           ]
         },
@@ -597,7 +597,7 @@
               "logLevels": [
                 "Emergency"
               ],
-              "name": "sysLogsDataSource-ManagedCEF-nopri"
+              "name": "sysLogs-MgdCEF-nopri"
             }
           ]
         },
@@ -651,7 +651,7 @@
                 "Alert",
                 "Emergency"
               ],
-              "name": "sysLogsDataSource-ManagedCiscoAsa"
+              "name": "sysLogs-MgdCiscoAsa"
             },
             {
               "streams": [
@@ -663,7 +663,7 @@
               "logLevels": [
                 "Emergency"
               ],
-              "name": "sysLogsDataSource-ManagedCiscoAsa-nopri"
+              "name": "sysLogs-MgdCisco-nopri"
             }
           ]
         },
