@@ -36,15 +36,6 @@
         "label": "Data Collection Rule",
         "elements": [
           {
-            "name": "infoDcr",
-            "type": "Microsoft.Common.InfoBox",
-            "visible": true,
-            "options": {
-              "icon": "Info",
-              "text": "Configure Data Collection Rules (DCRs). Deploy Windows DCRs (Security and System/Application logs) and/or Unmanaged Collector DCRs (syslog, CEF, Cisco) to your Log Analytics workspace."
-            }
-          },
-          {
             "name": "deployWindowsDcrs",
             "type": "Microsoft.Common.CheckBox",
             "label": "Deploy Windows DCR?",
