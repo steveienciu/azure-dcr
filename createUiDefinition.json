@@ -158,6 +158,85 @@
               "validationMessage": "Use alphanumeric characters, hyphens, underscores, or periods."
             },
             "visible": "[and(steps('dcr').deployUnmanagedCollectorDcr, steps('dcr').deployCiscoDcr)]"
+          },
+          {
+            "name": "deployManagedCollectorDcr",
+            "type": "Microsoft.Common.CheckBox",
+            "label": "Deploy Managed Collector DCR?",
+            "toolTip": "When checked, you can optionally deploy syslog, CEF, or Cisco DCRs for managed collectors.",
+            "constraints": {
+              "required": false
+            },
+            "visible": true
+          },
+          {
+            "name": "deployManagedSyslogDcr",
+            "type": "Microsoft.Common.CheckBox",
+            "label": "Deploy syslog DCR?",
+            "toolTip": "When checked, a syslog Data Collection Rule for managed collectors will be created.",
+            "constraints": {
+              "required": false
+            },
+            "visible": "[steps('dcr').deployManagedCollectorDcr]"
+          },
+          {
+            "name": "managedSyslogDcrName",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Syslog DCR name",
+            "defaultValue": "bv-managed-syslog-dcr",
+            "toolTip": "Name for the managed syslog Data Collection Rule. Must be unique in the resource group.",
+            "constraints": {
+              "required": false,
+              "regex": "^[A-Za-z0-9][A-Za-z0-9-_.]*[A-Za-z0-9_]$|^[A-Za-z0-9]$",
+              "validationMessage": "Use alphanumeric characters, hyphens, underscores, or periods."
+            },
+            "visible": "[and(steps('dcr').deployManagedCollectorDcr, steps('dcr').deployManagedSyslogDcr)]"
+          },
+          {
+            "name": "deployManagedCefDcr",
+            "type": "Microsoft.Common.CheckBox",
+            "label": "Deploy CEF DCR?",
+            "toolTip": "When checked, a CEF Data Collection Rule for managed collectors will be created.",
+            "constraints": {
+              "required": false
+            },
+            "visible": "[steps('dcr').deployManagedCollectorDcr]"
+          },
+          {
+            "name": "managedCefDcrName",
+            "type": "Microsoft.Common.TextBox",
+            "label": "CEF DCR name",
+            "defaultValue": "bv-managed-cef-dcr",
+            "toolTip": "Name for the managed CEF Data Collection Rule. Must be unique in the resource group.",
+            "constraints": {
+              "required": false,
+              "regex": "^[A-Za-z0-9][A-Za-z0-9-_.]*[A-Za-z0-9_]$|^[A-Za-z0-9]$",
+              "validationMessage": "Use alphanumeric characters, hyphens, underscores, or periods."
+            },
+            "visible": "[and(steps('dcr').deployManagedCollectorDcr, steps('dcr').deployManagedCefDcr)]"
+          },
+          {
+            "name": "deployManagedCiscoDcr",
+            "type": "Microsoft.Common.CheckBox",
+            "label": "Deploy Cisco DCR?",
+            "toolTip": "When checked, a Cisco Data Collection Rule for managed collectors will be created.",
+            "constraints": {
+              "required": false
+            },
+            "visible": "[steps('dcr').deployManagedCollectorDcr]"
+          },
+          {
+            "name": "managedCiscoDcrName",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Cisco DCR name",
+            "defaultValue": "bv-managed-cisco-dcr",
+            "toolTip": "Name for the managed Cisco Data Collection Rule. Must be unique in the resource group.",
+            "constraints": {
+              "required": false,
+              "regex": "^[A-Za-z0-9][A-Za-z0-9-_.]*[A-Za-z0-9_]$|^[A-Za-z0-9]$",
+              "validationMessage": "Use alphanumeric characters, hyphens, underscores, or periods."
+            },
+            "visible": "[and(steps('dcr').deployManagedCollectorDcr, steps('dcr').deployManagedCiscoDcr)]"
           }
         ]
       }
@@ -175,7 +254,13 @@
       "deployCefDcr": "[steps('dcr').deployCefDcr]",
       "cefDcrName": "[steps('dcr').cefDcrName]",
       "deployCiscoDcr": "[steps('dcr').deployCiscoDcr]",
-      "ciscoDcrName": "[steps('dcr').ciscoDcrName]"
+      "ciscoDcrName": "[steps('dcr').ciscoDcrName]",
+      "deployManagedSyslogDcr": "[steps('dcr').deployManagedSyslogDcr]",
+      "managedSyslogDcrName": "[steps('dcr').managedSyslogDcrName]",
+      "deployManagedCefDcr": "[steps('dcr').deployManagedCefDcr]",
+      "managedCefDcrName": "[steps('dcr').managedCefDcrName]",
+      "deployManagedCiscoDcr": "[steps('dcr').deployManagedCiscoDcr]",
+      "managedCiscoDcrName": "[steps('dcr').managedCiscoDcrName]"
     }
   }
 }
