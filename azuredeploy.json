@@ -33,11 +33,26 @@
       "metadata": {
         "description": "Name of the Windows Event Logs DCR."
       }
+    },
+    "deploySystemAppDcr": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "When true, deploys the System and Application logs DCR."
+      }
+    },
+    "systemAppDcrName": {
+      "type": "string",
+      "defaultValue": "bv-windows-system-application-dcr",
+      "metadata": {
+        "description": "Name of the System and Application logs DCR."
+      }
     }
   },
   "variables": {
     "workspaceResourceId": "[resourceId(parameters('workspaceResourceGroup'), 'Microsoft.OperationalInsights/workspaces', parameters('workspaceName'))]",
-    "effectiveWindowsDcrName": "[if(equals(parameters('windowsDcrName'), ''), 'bv-windows-security-event-dcr', parameters('windowsDcrName'))]"
+    "effectiveWindowsDcrName": "[if(equals(parameters('windowsDcrName'), ''), 'bv-windows-security-event-dcr', parameters('windowsDcrName'))]",
+    "effectiveSystemAppDcrName": "[if(equals(parameters('systemAppDcrName'), ''), 'bv-windows-system-application-dcr', parameters('systemAppDcrName'))]"
   },
   "resources": [
     {
@@ -94,6 +109,54 @@
           }
         ]
       }
+    },
+    {
+      "condition": "[parameters('deploySystemAppDcr')]",
+      "type": "Microsoft.Insights/dataCollectionRules",
+      "apiVersion": "2022-06-01",
+      "name": "[variables('effectiveSystemAppDcrName')]",
+      "location": "[parameters('location')]",
+      "kind": "Windows",
+      "tags": {
+        "createdBy": "DCR-Deployment"
+      },
+      "properties": {
+        "streamDeclarations": {},
+        "dataSources": {
+          "windowsEventLogs": [
+            {
+              "streams": [
+                "Microsoft-Event"
+              ],
+              "xPathQueries": [
+                "Application!*[System[(Level=1 or Level=2 or Level=3 or Level=4 or Level=0)]]",
+                "System!*[System[(Level=1 or Level=2 or Level=3 or Level=4 or Level=0)]]"
+              ],
+              "name": "eventLogsDataSource"
+            }
+          ]
+        },
+        "destinations": {
+          "logAnalytics": [
+            {
+              "workspaceResourceId": "[variables('workspaceResourceId')]",
+              "name": "SystemAppLogs"
+            }
+          ]
+        },
+        "dataFlows": [
+          {
+            "streams": [
+              "Microsoft-Event"
+            ],
+            "destinations": [
+              "SystemAppLogs"
+            ],
+            "transformKql": "source",
+            "outputStream": "Microsoft-Event"
+          }
+        ]
+      }
     }
   ],
   "outputs": {
@@ -104,6 +167,14 @@
     "windowsDcrName": {
       "type": "string",
       "value": "[if(parameters('deployWindowsDcr'), variables('effectiveWindowsDcrName'), '')]"
+    },
+    "systemAppDcrDeployed": {
+      "type": "bool",
+      "value": "[parameters('deploySystemAppDcr')]"
+    },
+    "systemAppDcrName": {
+      "type": "string",
+      "value": "[if(parameters('deploySystemAppDcr'), variables('effectiveSystemAppDcrName'), '')]"
     }
   }
 }
