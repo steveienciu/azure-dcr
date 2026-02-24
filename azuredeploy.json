@@ -524,7 +524,7 @@
                 "Alert",
                 "Emergency"
               ],
-              "name": "sysLogsDataSource-Managed"
+              "name": "sysLogs-Mgd"
             },
             {
               "streams": [
@@ -536,7 +536,7 @@
               "logLevels": [
                 "Emergency"
               ],
-              "name": "sysLogsDataSource-Managed-nopri"
+              "name": "sysLogs-Mgd-nopri"
             }
           ]
         },
@@ -585,7 +585,7 @@
               "logLevels": [
                 "*"
               ],
-              "name": "sysLogsDataSource-ManagedCEF"
+              "name": "sysLogs-MgdCEF"
             },
             {
               "streams": [
