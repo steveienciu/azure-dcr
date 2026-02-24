@@ -61,6 +61,7 @@
       "apiVersion": "2022-06-01",
       "name": "[variables('effectiveWindowsDcrName')]",
       "location": "[parameters('location')]",
+      "kind": "Windows",
       "tags": {
         "createdBy": "DCR-Deployment"
       },
