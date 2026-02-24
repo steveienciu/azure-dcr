@@ -45,10 +45,10 @@
             }
           },
           {
-            "name": "deployWindowsDcr",
+            "name": "deployWindowsDcrs",
             "type": "Microsoft.Common.CheckBox",
-            "label": "Deploy Windows Event Logs DCR?",
-            "toolTip": "When checked, a Data Collection Rule for Windows Security events will be created and linked to your Log Analytics workspace.",
+            "label": "Deploy Windows DCR?",
+            "toolTip": "When checked, both the Windows Security DCR and the System/Application logs DCR will be created and linked to your Log Analytics workspace.",
             "constraints": {
               "required": false
             },
@@ -57,25 +57,15 @@
           {
             "name": "windowsDcrName",
             "type": "Microsoft.Common.TextBox",
-            "label": "DCR name",
+            "label": "Windows Security DCR name",
             "defaultValue": "bv-windows-security-event-dcr",
-            "toolTip": "Name for the Data Collection Rule. Must be unique in the resource group.",
+            "toolTip": "Name for the Windows Security Data Collection Rule. Must be unique in the resource group.",
             "constraints": {
               "required": false,
               "regex": "^[A-Za-z0-9][A-Za-z0-9-_.]*[A-Za-z0-9_]$|^[A-Za-z0-9]$",
               "validationMessage": "Use alphanumeric characters, hyphens, underscores, or periods."
             },
-            "visible": "[steps('dcr').deployWindowsDcr]"
-          },
-          {
-            "name": "deploySystemAppDcr",
-            "type": "Microsoft.Common.CheckBox",
-            "label": "Deploy System and Application logs DCR?",
-            "toolTip": "When checked, a DCR will be created to collect Windows System and Application event logs (by level) and send them to your Log Analytics workspace.",
-            "constraints": {
-              "required": false
-            },
-            "visible": true
+            "visible": "[steps('dcr').deployWindowsDcrs]"
           },
           {
             "name": "systemAppDcrName",
@@ -88,7 +78,7 @@
               "regex": "^[A-Za-z0-9][A-Za-z0-9-_.]*[A-Za-z0-9_]$|^[A-Za-z0-9]$",
               "validationMessage": "Use alphanumeric characters, hyphens, underscores, or periods."
             },
-            "visible": "[steps('dcr').deploySystemAppDcr]"
+            "visible": "[steps('dcr').deployWindowsDcrs]"
           }
         ]
       }
@@ -97,9 +87,9 @@
       "location": "[location()]",
       "workspaceResourceGroup": "[resourceGroup().name]",
       "workspaceName": "[basics('workspaceName')]",
-      "deployWindowsDcr": "[steps('dcr').deployWindowsDcr]",
+      "deployWindowsDcr": "[steps('dcr').deployWindowsDcrs]",
       "windowsDcrName": "[steps('dcr').windowsDcrName]",
-      "deploySystemAppDcr": "[steps('dcr').deploySystemAppDcr]",
+      "deploySystemAppDcr": "[steps('dcr').deployWindowsDcrs]",
       "systemAppDcrName": "[steps('dcr').systemAppDcrName]"
     }
   }
