@@ -111,7 +111,7 @@
               "regex": "^[A-Za-z0-9][A-Za-z0-9-_.]*[A-Za-z0-9_]$|^[A-Za-z0-9]$",
               "validationMessage": "Use alphanumeric characters, hyphens, underscores, or periods."
             },
-            "visible": "[steps('dcr').deploySyslogDcr]"
+            "visible": "[and(steps('dcr').deployUnmanagedCollectorDcr, steps('dcr').deploySyslogDcr)]"
           },
           {
             "name": "deployCefDcr",
@@ -134,7 +134,7 @@
               "regex": "^[A-Za-z0-9][A-Za-z0-9-_.]*[A-Za-z0-9_]$|^[A-Za-z0-9]$",
               "validationMessage": "Use alphanumeric characters, hyphens, underscores, or periods."
             },
-            "visible": "[steps('dcr').deployCefDcr]"
+            "visible": "[and(steps('dcr').deployUnmanagedCollectorDcr, steps('dcr').deployCefDcr)]"
           },
           {
             "name": "deployCiscoDcr",
@@ -157,7 +157,7 @@
               "regex": "^[A-Za-z0-9][A-Za-z0-9-_.]*[A-Za-z0-9_]$|^[A-Za-z0-9]$",
               "validationMessage": "Use alphanumeric characters, hyphens, underscores, or periods."
             },
-            "visible": "[steps('dcr').deployCiscoDcr]"
+            "visible": "[and(steps('dcr').deployUnmanagedCollectorDcr, steps('dcr').deployCiscoDcr)]"
           }
         ]
       }
