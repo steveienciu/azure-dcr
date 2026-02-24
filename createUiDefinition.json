@@ -41,7 +41,7 @@
             "visible": true,
             "options": {
               "icon": "Info",
-              "text": "Configure Data Collection Rules (DCRs) for Windows. You can deploy a Windows Security events DCR and/or a System and Application logs DCR to your Log Analytics workspace."
+              "text": "Configure Data Collection Rules (DCRs). Deploy Windows DCRs (Security and System/Application logs) and/or Unmanaged Collector DCRs (syslog, CEF, Cisco) to your Log Analytics workspace."
             }
           },
           {
@@ -79,13 +79,7 @@
               "validationMessage": "Use alphanumeric characters, hyphens, underscores, or periods."
             },
             "visible": "[steps('dcr').deployWindowsDcrs]"
-          }
-        ]
-      },
-      {
-        "name": "unmanagedCollector",
-        "label": "Unmanaged Collector",
-        "elements": [
+          },
           {
             "name": "deployUnmanagedCollectorDcr",
             "type": "Microsoft.Common.CheckBox",
@@ -104,7 +98,7 @@
             "constraints": {
               "required": false
             },
-            "visible": "[steps('unmanagedCollector').deployUnmanagedCollectorDcr]"
+            "visible": "[steps('dcr').deployUnmanagedCollectorDcr]"
           },
           {
             "name": "syslogDcrName",
@@ -117,7 +111,7 @@
               "regex": "^[A-Za-z0-9][A-Za-z0-9-_.]*[A-Za-z0-9_]$|^[A-Za-z0-9]$",
               "validationMessage": "Use alphanumeric characters, hyphens, underscores, or periods."
             },
-            "visible": "[steps('unmanagedCollector').deploySyslogDcr]"
+            "visible": "[steps('dcr').deploySyslogDcr]"
           },
           {
             "name": "deployCefDcr",
@@ -127,7 +121,7 @@
             "constraints": {
               "required": false
             },
-            "visible": "[steps('unmanagedCollector').deployUnmanagedCollectorDcr]"
+            "visible": "[steps('dcr').deployUnmanagedCollectorDcr]"
           },
           {
             "name": "cefDcrName",
@@ -140,7 +134,7 @@
               "regex": "^[A-Za-z0-9][A-Za-z0-9-_.]*[A-Za-z0-9_]$|^[A-Za-z0-9]$",
               "validationMessage": "Use alphanumeric characters, hyphens, underscores, or periods."
             },
-            "visible": "[steps('unmanagedCollector').deployCefDcr]"
+            "visible": "[steps('dcr').deployCefDcr]"
           },
           {
             "name": "deployCiscoDcr",
@@ -150,7 +144,7 @@
             "constraints": {
               "required": false
             },
-            "visible": "[steps('unmanagedCollector').deployUnmanagedCollectorDcr]"
+            "visible": "[steps('dcr').deployUnmanagedCollectorDcr]"
           },
           {
             "name": "ciscoDcrName",
@@ -163,7 +157,7 @@
               "regex": "^[A-Za-z0-9][A-Za-z0-9-_.]*[A-Za-z0-9_]$|^[A-Za-z0-9]$",
               "validationMessage": "Use alphanumeric characters, hyphens, underscores, or periods."
             },
-            "visible": "[steps('unmanagedCollector').deployCiscoDcr]"
+            "visible": "[steps('dcr').deployCiscoDcr]"
           }
         ]
       }
@@ -176,12 +170,12 @@
       "windowsDcrName": "[steps('dcr').windowsDcrName]",
       "deploySystemAppDcr": "[steps('dcr').deployWindowsDcrs]",
       "systemAppDcrName": "[steps('dcr').systemAppDcrName]",
-      "deploySyslogDcr": "[steps('unmanagedCollector').deploySyslogDcr]",
-      "syslogDcrName": "[steps('unmanagedCollector').syslogDcrName]",
-      "deployCefDcr": "[steps('unmanagedCollector').deployCefDcr]",
-      "cefDcrName": "[steps('unmanagedCollector').cefDcrName]",
-      "deployCiscoDcr": "[steps('unmanagedCollector').deployCiscoDcr]",
-      "ciscoDcrName": "[steps('unmanagedCollector').ciscoDcrName]"
+      "deploySyslogDcr": "[steps('dcr').deploySyslogDcr]",
+      "syslogDcrName": "[steps('dcr').syslogDcrName]",
+      "deployCefDcr": "[steps('dcr').deployCefDcr]",
+      "cefDcrName": "[steps('dcr').cefDcrName]",
+      "deployCiscoDcr": "[steps('dcr').deployCiscoDcr]",
+      "ciscoDcrName": "[steps('dcr').ciscoDcrName]"
     }
   }
 }
