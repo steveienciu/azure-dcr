@@ -89,6 +89,48 @@
       "metadata": {
         "description": "Name for the Cisco DCR (for future use)."
       }
+    },
+    "deployManagedSyslogDcr": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "When true, deploys the managed syslog DCR."
+      }
+    },
+    "managedSyslogDcrName": {
+      "type": "string",
+      "defaultValue": "bv-managed-syslog-dcr",
+      "metadata": {
+        "description": "Name of the managed syslog DCR."
+      }
+    },
+    "deployManagedCefDcr": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "When true, deploys the managed CEF DCR."
+      }
+    },
+    "managedCefDcrName": {
+      "type": "string",
+      "defaultValue": "bv-managed-cef-dcr",
+      "metadata": {
+        "description": "Name of the managed CEF DCR."
+      }
+    },
+    "deployManagedCiscoDcr": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "When true, deploys the managed Cisco DCR."
+      }
+    },
+    "managedCiscoDcrName": {
+      "type": "string",
+      "defaultValue": "bv-managed-cisco-dcr",
+      "metadata": {
+        "description": "Name of the managed Cisco DCR."
+      }
     }
   },
   "variables": {
@@ -97,7 +139,10 @@
     "effectiveSystemAppDcrName": "[if(equals(parameters('systemAppDcrName'), ''), 'bv-windows-system-application-dcr', parameters('systemAppDcrName'))]",
     "effectiveSyslogDcrName": "[if(equals(parameters('syslogDcrName'), ''), 'bv-syslog-dcr', parameters('syslogDcrName'))]",
     "effectiveCefDcrName": "[if(equals(parameters('cefDcrName'), ''), 'bv-cef-dcr', parameters('cefDcrName'))]",
-    "effectiveCiscoDcrName": "[if(equals(parameters('ciscoDcrName'), ''), 'bv-cisco-dcr', parameters('ciscoDcrName'))]"
+    "effectiveCiscoDcrName": "[if(equals(parameters('ciscoDcrName'), ''), 'bv-cisco-dcr', parameters('ciscoDcrName'))]",
+    "effectiveManagedSyslogDcrName": "[if(equals(parameters('managedSyslogDcrName'), ''), 'bv-managed-syslog-dcr', parameters('managedSyslogDcrName'))]",
+    "effectiveManagedCefDcrName": "[if(equals(parameters('managedCefDcrName'), ''), 'bv-managed-cef-dcr', parameters('managedCefDcrName'))]",
+    "effectiveManagedCiscoDcrName": "[if(equals(parameters('managedCiscoDcrName'), ''), 'bv-managed-cisco-dcr', parameters('managedCiscoDcrName'))]"
   },
   "resources": [
     {
@@ -428,6 +473,219 @@
           }
         ]
       }
+    },
+    {
+      "condition": "[parameters('deployManagedSyslogDcr')]",
+      "type": "Microsoft.Insights/dataCollectionRules",
+      "apiVersion": "2022-06-01",
+      "name": "[variables('effectiveManagedSyslogDcrName')]",
+      "location": "[parameters('location')]",
+      "kind": "Linux",
+      "tags": {
+        "createdBy": "DCR-Deployment"
+      },
+      "properties": {
+        "dataSources": {
+          "syslog": [
+            {
+              "streams": [
+                "Microsoft-Syslog"
+              ],
+              "facilityNames": [
+                "alert",
+                "audit",
+                "auth",
+                "authpriv",
+                "cron",
+                "daemon",
+                "clock",
+                "ftp",
+                "kern",
+                "local0",
+                "local1",
+                "local2",
+                "local3",
+                "local4",
+                "local5",
+                "local6",
+                "local7",
+                "lpr",
+                "mail",
+                "ntp",
+                "syslog",
+                "user"
+              ],
+              "logLevels": [
+                "Info",
+                "Notice",
+                "Warning",
+                "Error",
+                "Critical",
+                "Alert",
+                "Emergency"
+              ],
+              "name": "sysLogsDataSource-Managed"
+            },
+            {
+              "streams": [
+                "Microsoft-Syslog"
+              ],
+              "facilityNames": [
+                "nopri"
+              ],
+              "logLevels": [
+                "Emergency"
+              ],
+              "name": "sysLogsDataSource-Managed-nopri"
+            }
+          ]
+        },
+        "destinations": {
+          "logAnalytics": [
+            {
+              "workspaceResourceId": "[variables('workspaceResourceId')]",
+              "name": "DataCollectionEvent"
+            }
+          ]
+        },
+        "dataFlows": [
+          {
+            "streams": [
+              "Microsoft-Syslog"
+            ],
+            "destinations": [
+              "DataCollectionEvent"
+            ],
+            "transformKql": "source",
+            "outputStream": "Microsoft-Syslog"
+          }
+        ]
+      }
+    },
+    {
+      "condition": "[parameters('deployManagedCefDcr')]",
+      "type": "Microsoft.Insights/dataCollectionRules",
+      "apiVersion": "2022-06-01",
+      "name": "[variables('effectiveManagedCefDcrName')]",
+      "location": "[parameters('location')]",
+      "kind": "Linux",
+      "tags": {
+        "createdBy": "DCR-Deployment"
+      },
+      "properties": {
+        "dataSources": {
+          "syslog": [
+            {
+              "streams": [
+                "Microsoft-CommonSecurityLog"
+              ],
+              "facilityNames": [
+                "news"
+              ],
+              "logLevels": [
+                "*"
+              ],
+              "name": "sysLogsDataSource-ManagedCEF"
+            },
+            {
+              "streams": [
+                "Microsoft-CommonSecurityLog"
+              ],
+              "facilityNames": [
+                "nopri"
+              ],
+              "logLevels": [
+                "Emergency"
+              ],
+              "name": "sysLogsDataSource-ManagedCEF-nopri"
+            }
+          ]
+        },
+        "destinations": {
+          "logAnalytics": [
+            {
+              "workspaceResourceId": "[variables('workspaceResourceId')]",
+              "name": "DataCollectionEvent"
+            }
+          ]
+        },
+        "dataFlows": [
+          {
+            "streams": [
+              "Microsoft-CommonSecurityLog"
+            ],
+            "destinations": [
+              "DataCollectionEvent"
+            ],
+            "transformKql": "source"
+          }
+        ]
+      }
+    },
+    {
+      "condition": "[parameters('deployManagedCiscoDcr')]",
+      "type": "Microsoft.Insights/dataCollectionRules",
+      "apiVersion": "2023-03-11",
+      "name": "[variables('effectiveManagedCiscoDcrName')]",
+      "location": "[parameters('location')]",
+      "kind": "Linux",
+      "tags": {
+        "createdBy": "DCR-Deployment"
+      },
+      "properties": {
+        "dataSources": {
+          "syslog": [
+            {
+              "streams": [
+                "Microsoft-CiscoAsa"
+              ],
+              "facilityNames": [
+                "uucp"
+              ],
+              "logLevels": [
+                "Info",
+                "Notice",
+                "Warning",
+                "Error",
+                "Critical",
+                "Alert",
+                "Emergency"
+              ],
+              "name": "sysLogsDataSource-ManagedCiscoAsa"
+            },
+            {
+              "streams": [
+                "Microsoft-CiscoAsa"
+              ],
+              "facilityNames": [
+                "nopri"
+              ],
+              "logLevels": [
+                "Emergency"
+              ],
+              "name": "sysLogsDataSource-ManagedCiscoAsa-nopri"
+            }
+          ]
+        },
+        "destinations": {
+          "logAnalytics": [
+            {
+              "workspaceResourceId": "[variables('workspaceResourceId')]",
+              "name": "DataCollectionEvent"
+            }
+          ]
+        },
+        "dataFlows": [
+          {
+            "streams": [
+              "Microsoft-CiscoAsa"
+            ],
+            "destinations": [
+              "DataCollectionEvent"
+            ]
+          }
+        ]
+      }
     }
   ],
   "outputs": {
@@ -470,6 +728,30 @@
     "ciscoDcrName": {
       "type": "string",
       "value": "[if(parameters('deployCiscoDcr'), variables('effectiveCiscoDcrName'), '')]"
+    },
+    "managedSyslogDcrDeployed": {
+      "type": "bool",
+      "value": "[parameters('deployManagedSyslogDcr')]"
+    },
+    "managedSyslogDcrName": {
+      "type": "string",
+      "value": "[if(parameters('deployManagedSyslogDcr'), variables('effectiveManagedSyslogDcrName'), '')]"
+    },
+    "managedCefDcrDeployed": {
+      "type": "bool",
+      "value": "[parameters('deployManagedCefDcr')]"
+    },
+    "managedCefDcrName": {
+      "type": "string",
+      "value": "[if(parameters('deployManagedCefDcr'), variables('effectiveManagedCefDcrName'), '')]"
+    },
+    "managedCiscoDcrDeployed": {
+      "type": "bool",
+      "value": "[parameters('deployManagedCiscoDcr')]"
+    },
+    "managedCiscoDcrName": {
+      "type": "string",
+      "value": "[if(parameters('deployManagedCiscoDcr'), variables('effectiveManagedCiscoDcrName'), '')]"
     }
   }
 }
