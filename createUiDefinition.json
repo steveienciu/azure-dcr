@@ -17,19 +17,6 @@
     },
     "basics": [
       {
-        "name": "workspaceResourceGroup",
-        "type": "Microsoft.Common.TextBox",
-        "label": "Log Analytics workspace resource group",
-        "defaultValue": "",
-        "toolTip": "Resource group that contains the Log Analytics workspace where Windows event data will be sent.",
-        "constraints": {
-          "required": true,
-          "regex": "^[A-Za-z0-9][A-Za-z0-9-._()]*[A-Za-z0-9_()]$|^[A-Za-z0-9]$",
-          "validationMessage": "Enter a valid resource group name."
-        },
-        "visible": true
-      },
-      {
         "name": "workspaceName",
         "type": "Microsoft.Common.TextBox",
         "label": "Log Analytics workspace name",
@@ -71,7 +58,7 @@
             "name": "windowsDcrName",
             "type": "Microsoft.Common.TextBox",
             "label": "DCR name",
-            "defaultValue": "WindowsSecurityEventDCR",
+            "defaultValue": "bv-windows-security-event-dcr",
             "toolTip": "Name for the Data Collection Rule. Must be unique in the resource group.",
             "constraints": {
               "required": false,
@@ -85,7 +72,7 @@
     ],
     "outputs": {
       "location": "[location()]",
-      "workspaceResourceGroup": "[basics('workspaceResourceGroup')]",
+      "workspaceResourceGroup": "[resourceGroup().name]",
       "workspaceName": "[basics('workspaceName')]",
       "deployWindowsDcr": "[steps('dcr').deployWindowsDcr]",
       "windowsDcrName": "[steps('dcr').windowsDcrName]"
