@@ -183,7 +183,7 @@
             "name": "managedSyslogDcrName",
             "type": "Microsoft.Common.TextBox",
             "label": "Syslog DCR name",
-            "defaultValue": "bv-managed-syslog-dcr",
+            "defaultValue": "bv-syslog-dcr",
             "toolTip": "Name for the managed syslog Data Collection Rule. Must be unique in the resource group.",
             "constraints": {
               "required": false,
@@ -206,7 +206,7 @@
             "name": "managedCefDcrName",
             "type": "Microsoft.Common.TextBox",
             "label": "CEF DCR name",
-            "defaultValue": "bv-managed-cef-dcr",
+            "defaultValue": "bv-cef-dcr",
             "toolTip": "Name for the managed CEF Data Collection Rule. Must be unique in the resource group.",
             "constraints": {
               "required": false,
@@ -229,7 +229,7 @@
             "name": "managedCiscoDcrName",
             "type": "Microsoft.Common.TextBox",
             "label": "Cisco DCR name",
-            "defaultValue": "bv-managed-cisco-dcr",
+            "defaultValue": "bv-cisco-dcr",
             "toolTip": "Name for the managed Cisco Data Collection Rule. Must be unique in the resource group.",
             "constraints": {
               "required": false,
