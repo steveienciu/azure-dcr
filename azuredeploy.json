@@ -99,7 +99,7 @@
     },
     "managedSyslogDcrName": {
       "type": "string",
-      "defaultValue": "bv-managed-syslog-dcr",
+      "defaultValue": "bv-syslog-dcr",
       "metadata": {
         "description": "Name of the managed syslog DCR."
       }
@@ -113,7 +113,7 @@
     },
     "managedCefDcrName": {
       "type": "string",
-      "defaultValue": "bv-managed-cef-dcr",
+      "defaultValue": "bv-cef-dcr",
       "metadata": {
         "description": "Name of the managed CEF DCR."
       }
@@ -127,7 +127,7 @@
     },
     "managedCiscoDcrName": {
       "type": "string",
-      "defaultValue": "bv-managed-cisco-dcr",
+      "defaultValue": "bv-cisco-dcr",
       "metadata": {
         "description": "Name of the managed Cisco DCR."
       }
@@ -140,9 +140,9 @@
     "effectiveSyslogDcrName": "[if(equals(parameters('syslogDcrName'), ''), 'bv-syslog-dcr', parameters('syslogDcrName'))]",
     "effectiveCefDcrName": "[if(equals(parameters('cefDcrName'), ''), 'bv-cef-dcr', parameters('cefDcrName'))]",
     "effectiveCiscoDcrName": "[if(equals(parameters('ciscoDcrName'), ''), 'bv-cisco-dcr', parameters('ciscoDcrName'))]",
-    "effectiveManagedSyslogDcrName": "[if(equals(parameters('managedSyslogDcrName'), ''), 'bv-managed-syslog-dcr', parameters('managedSyslogDcrName'))]",
-    "effectiveManagedCefDcrName": "[if(equals(parameters('managedCefDcrName'), ''), 'bv-managed-cef-dcr', parameters('managedCefDcrName'))]",
-    "effectiveManagedCiscoDcrName": "[if(equals(parameters('managedCiscoDcrName'), ''), 'bv-managed-cisco-dcr', parameters('managedCiscoDcrName'))]"
+    "effectiveManagedSyslogDcrName": "[if(equals(parameters('managedSyslogDcrName'), ''), 'bv-syslog-dcr', parameters('managedSyslogDcrName'))]",
+    "effectiveManagedCefDcrName": "[if(equals(parameters('managedCefDcrName'), ''), 'bv-cef-dcr', parameters('managedCefDcrName'))]",
+    "effectiveManagedCiscoDcrName": "[if(equals(parameters('managedCiscoDcrName'), ''), 'bv-cisco-dcr', parameters('managedCiscoDcrName'))]"
   },
   "resources": [
     {
